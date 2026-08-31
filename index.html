@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#07111f" />
+  <meta name="description" content="FinanX — sua vida financeira em ordem." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>FinanX</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <span class="eyebrow">CONTROLE FINANCEIRO</span>
+        <h1>Finan<span>X</span></h1>
+      </div>
+      <button id="installBtn" class="ghost hidden">Instalar app</button>
+    </header>
+
+    <main>
+      <section class="hero card">
+        <div>
+          <p class="muted">Visão geral</p>
+          <h2 id="balanceLabel">R$ 0,00</h2>
+          <p class="muted">Saldo projetado após compromissos</p>
+        </div>
+        <div class="health">
+          <span>Saúde financeira</span>
+          <strong id="healthScore">100</strong>
+        </div>
+      </section>
+
+      <section class="metrics-grid">
+        <article class="metric card danger-soft"><span>🔴 Atrasado</span><strong id="overdueTotal">R$ 0,00</strong><small id="overdueCount">0 contas</small></article>
+        <article class="metric card warning-soft"><span>🟠 A pagar</span><strong id="pendingTotal">R$ 0,00</strong><small id="pendingCount">0 contas</small></article>
+        <article class="metric card success-soft"><span>🟢 Pago no mês</span><strong id="paidTotal">R$ 0,00</strong><small id="paidCount">0 contas</small></article>
+        <article class="metric card info-soft"><span>📈 Investimentos</span><strong id="investmentTotal">R$ 0,00</strong><small>patrimônio investido</small></article>
+      </section>
+
+      <section class="quick-actions">
+        <button data-open="debtModal">＋ Nova dívida</button>
+        <button data-open="expenseModal">＋ Gasto mensal</button>
+        <button data-open="incomeModal">＋ Receita</button>
+        <button data-open="investmentModal">＋ Investimento</button>
+      </section>
+
+      <section class="card section-card">
+        <div class="section-head">
+          <div><p class="muted">Prioridade</p><h3>O que precisa da sua atenção</h3></div>
+          <select id="debtFilter"><option value="all">Todas</option><option value="overdue">Atrasadas</option><option value="pending">A pagar</option><option value="paid">Pagas</option></select>
+        </div>
+        <div id="debtsList" class="list empty-state">Nenhuma dívida cadastrada.</div>
+      </section>
+
+      <section class="two-col">
+        <article class="card section-card">
+          <div class="section-head"><div><p class="muted">Mês atual</p><h3>Gastos mensais</h3></div><strong id="expensesTotal">R$ 0,00</strong></div>
+          <div id="expensesList" class="list empty-state">Nenhum gasto mensal cadastrado.</div>
+        </article>
+        <article class="card section-card">
+          <div class="section-head"><div><p class="muted">Construção de patrimônio</p><h3>Investimentos</h3></div><strong id="investmentsTotal2">R$ 0,00</strong></div>
+          <div id="investmentsList" class="list empty-state">Nenhum investimento cadastrado.</div>
+        </article>
+      </section>
+
+      <section class="card section-card">
+        <div class="section-head"><div><p class="muted">Planejamento</p><h3>Seu mês em números</h3></div></div>
+        <div class="summary-row"><span>Receitas</span><strong id="incomeTotal">R$ 0,00</strong></div>
+        <div class="summary-row"><span>Gastos mensais</span><strong id="monthlyExpenseSummary">R$ 0,00</strong></div>
+        <div class="summary-row"><span>Dívidas a pagar</span><strong id="debtSummary">R$ 0,00</strong></div>
+        <div class="summary-row total"><span>Sobra projetada</span><strong id="projectedTotal">R$ 0,00</strong></div>
+      </section>
+    </main>
+
+    <footer>FinanX • clareza para decidir melhor</footer>
+  </div>
+
+  <dialog id="debtModal">
+    <form id="debtForm" method="dialog">
+      <div class="modal-head"><h3>Nova dívida</h3><button type="button" data-close>✕</button></div>
+      <label>Nome da pessoa/empresa<input name="name" required placeholder="Ex.: João, Banco, Loja" /></label>
+      <label>Valor total<input name="amount" type="number" min="0" step="0.01" required placeholder="0,00" /></label>
+      <label>Data de vencimento<input name="dueDate" type="date" required /></label>
+      <div class="form-grid"><label>Parcelado?<select name="installment"><option value="no">Não</option><option value="yes">Sim</option></select></label><label>Nº de parcelas<input name="installments" type="number" min="1" value="1" /></label></div>
+      <label>Observação<input name="note" placeholder="Opcional" /></label>
+      <button class="primary" type="submit">Salvar dívida</button>
+    </form>
+  </dialog>
+
+  <dialog id="expenseModal">
+    <form id="expenseForm" method="dialog">
+      <div class="modal-head"><h3>Novo gasto mensal</h3><button type="button" data-close>✕</button></div>
+      <label>Descrição<input name="name" required placeholder="Ex.: Aluguel" /></label>
+      <label>Valor<input name="amount" type="number" min="0" step="0.01" required /></label>
+      <label>Categoria<select name="category"><option>Moradia</option><option>Alimentação</option><option>Transporte</option><option>Saúde</option><option>Lazer</option><option>Educação</option><option>Assinaturas</option><option>Outros</option></select></label>
+      <button class="primary" type="submit">Salvar gasto</button>
+    </form>
+  </dialog>
+
+  <dialog id="incomeModal">
+    <form id="incomeForm" method="dialog">
+      <div class="modal-head"><h3>Nova receita</h3><button type="button" data-close>✕</button></div>
+      <label>Descrição<input name="name" required placeholder="Ex.: Salário, comissão" /></label>
+      <label>Valor<input name="amount" type="number" min="0" step="0.01" required /></label>
+      <button class="primary" type="submit">Salvar receita</button>
+    </form>
+  </dialog>
+
+  <dialog id="investmentModal">
+    <form id="investmentForm" method="dialog">
+      <div class="modal-head"><h3>Novo investimento</h3><button type="button" data-close>✕</button></div>
+      <label>Investimento<input name="name" required placeholder="Ex.: CDB, Tesouro, Bitcoin" /></label>
+      <label>Valor atual<input name="amount" type="number" min="0" step="0.01" required /></label>
+      <label>Tipo<select name="type"><option>Renda fixa</option><option>Fundos</option><option>Ações</option><option>Cripto</option><option>Reserva</option><option>Outro</option></select></label>
+      <button class="primary" type="submit">Salvar investimento</button>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
