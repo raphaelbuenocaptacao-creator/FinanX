@@ -1,0 +1,12 @@
+{
+  "name":"FinanX — Controle Financeiro",
+  "short_name":"FinanX",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#07111f",
+  "theme_color":"#07111f",
+  "description":"Controle de dívidas, gastos, receitas e investimentos.",
+  "icons":[
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
