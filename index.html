@@ -12,111 +12,70 @@
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <div>
-        <span class="eyebrow">CONTROLE FINANCEIRO</span>
-        <h1>Finan<span>X</span></h1>
-      </div>
+      <div><span class="eyebrow">SUA VIDA FINANCEIRA</span><h1>Finan<span>X</span></h1></div>
       <button id="installBtn" class="ghost hidden">Instalar app</button>
     </header>
 
     <main>
       <section class="hero card">
-        <div>
-          <p class="muted">Visão geral</p>
-          <h2 id="balanceLabel">R$ 0,00</h2>
-          <p class="muted">Saldo projetado após compromissos</p>
-        </div>
-        <div class="health">
-          <span>Saúde financeira</span>
-          <strong id="healthScore">100</strong>
-        </div>
+        <div><p class="muted">Saldo projetado</p><h2 id="balanceLabel">R$ 0,00</h2><p class="muted">Receitas − gastos − dívidas abertas</p></div>
+        <div class="health"><span>Saúde financeira</span><strong id="healthScore">100</strong></div>
       </section>
 
       <section class="metrics-grid">
         <article class="metric card danger-soft"><span>🔴 Atrasado</span><strong id="overdueTotal">R$ 0,00</strong><small id="overdueCount">0 contas</small></article>
         <article class="metric card warning-soft"><span>🟠 A pagar</span><strong id="pendingTotal">R$ 0,00</strong><small id="pendingCount">0 contas</small></article>
-        <article class="metric card success-soft"><span>🟢 Pago no mês</span><strong id="paidTotal">R$ 0,00</strong><small id="paidCount">0 contas</small></article>
-        <article class="metric card info-soft"><span>📈 Investimentos</span><strong id="investmentTotal">R$ 0,00</strong><small>patrimônio investido</small></article>
+        <article class="metric card success-soft"><span>🟢 Pago</span><strong id="paidTotal">R$ 0,00</strong><small id="paidCount">0 contas</small></article>
+        <article class="metric card info-soft"><span>💎 Patrimônio</span><strong id="netWorthTotal">R$ 0,00</strong><small>ativos + investimentos − dívidas</small></article>
       </section>
 
       <section class="quick-actions">
-        <button data-open="debtModal">＋ Nova dívida</button>
-        <button data-open="expenseModal">＋ Gasto mensal</button>
-        <button data-open="incomeModal">＋ Receita</button>
-        <button data-open="investmentModal">＋ Investimento</button>
+        <button data-open="debtModal">＋ Nova dívida</button><button data-open="expenseModal">＋ Gasto</button><button data-open="incomeModal">＋ Receita</button><button data-open="investmentModal">＋ Investimento</button><button data-open="assetModal">＋ Patrimônio</button><button data-open="goalModal">＋ Meta</button>
+      </section>
+
+      <section class="two-col">
+        <article class="card section-card debt-plan">
+          <div class="section-head"><div><p class="muted">PLANO FINANX</p><h3>Zero Dívidas</h3></div><span class="pill" id="freedomPercent">0%</span></div>
+          <div class="progress"><span id="freedomBar"></span></div>
+          <div class="summary-row"><span>Total já pago</span><strong id="debtPaidProgress">R$ 0,00</strong></div>
+          <div class="summary-row"><span>Falta quitar</span><strong id="debtOpenProgress">R$ 0,00</strong></div>
+          <div class="insight" id="debtInsight">Cadastre suas dívidas para o FinanX montar sua prioridade.</div>
+        </article>
+        <article class="card section-card">
+          <div class="section-head"><div><p class="muted">PRÓXIMOS DIAS</p><h3>Calendário financeiro</h3></div></div>
+          <div id="calendarList" class="list empty-state">Nenhum vencimento próximo.</div>
+        </article>
       </section>
 
       <section class="card section-card">
-        <div class="section-head">
-          <div><p class="muted">Prioridade</p><h3>O que precisa da sua atenção</h3></div>
-          <select id="debtFilter"><option value="all">Todas</option><option value="overdue">Atrasadas</option><option value="pending">A pagar</option><option value="paid">Pagas</option></select>
-        </div>
+        <div class="section-head"><div><p class="muted">Prioridade</p><h3>Dívidas e compromissos</h3></div><select id="debtFilter"><option value="all">Todas</option><option value="overdue">Atrasadas</option><option value="pending">A pagar</option><option value="paid">Pagas</option></select></div>
         <div id="debtsList" class="list empty-state">Nenhuma dívida cadastrada.</div>
       </section>
 
       <section class="two-col">
-        <article class="card section-card">
-          <div class="section-head"><div><p class="muted">Mês atual</p><h3>Gastos mensais</h3></div><strong id="expensesTotal">R$ 0,00</strong></div>
-          <div id="expensesList" class="list empty-state">Nenhum gasto mensal cadastrado.</div>
-        </article>
-        <article class="card section-card">
-          <div class="section-head"><div><p class="muted">Construção de patrimônio</p><h3>Investimentos</h3></div><strong id="investmentsTotal2">R$ 0,00</strong></div>
-          <div id="investmentsList" class="list empty-state">Nenhum investimento cadastrado.</div>
-        </article>
+        <article class="card section-card"><div class="section-head"><div><p class="muted">Mês atual</p><h3>Gastos mensais</h3></div><strong id="expensesTotal">R$ 0,00</strong></div><div id="expensesList" class="list empty-state">Nenhum gasto mensal cadastrado.</div></article>
+        <article class="card section-card"><div class="section-head"><div><p class="muted">Construção de patrimônio</p><h3>Investimentos</h3></div><strong id="investmentsTotal2">R$ 0,00</strong></div><div id="investmentsList" class="list empty-state">Nenhum investimento cadastrado.</div></article>
+      </section>
+
+      <section class="two-col">
+        <article class="card section-card"><div class="section-head"><div><p class="muted">Bens e reservas</p><h3>Meu patrimônio</h3></div><strong id="assetsTotal">R$ 0,00</strong></div><div id="assetsList" class="list empty-state">Nenhum patrimônio cadastrado.</div></article>
+        <article class="card section-card"><div class="section-head"><div><p class="muted">Objetivos</p><h3>Minhas metas</h3></div></div><div id="goalsList" class="list empty-state">Nenhuma meta cadastrada.</div></article>
       </section>
 
       <section class="card section-card">
         <div class="section-head"><div><p class="muted">Planejamento</p><h3>Seu mês em números</h3></div></div>
-        <div class="summary-row"><span>Receitas</span><strong id="incomeTotal">R$ 0,00</strong></div>
-        <div class="summary-row"><span>Gastos mensais</span><strong id="monthlyExpenseSummary">R$ 0,00</strong></div>
-        <div class="summary-row"><span>Dívidas a pagar</span><strong id="debtSummary">R$ 0,00</strong></div>
-        <div class="summary-row total"><span>Sobra projetada</span><strong id="projectedTotal">R$ 0,00</strong></div>
+        <div class="summary-row"><span>Receitas</span><strong id="incomeTotal">R$ 0,00</strong></div><div class="summary-row"><span>Gastos mensais</span><strong id="monthlyExpenseSummary">R$ 0,00</strong></div><div class="summary-row"><span>Dívidas a pagar</span><strong id="debtSummary">R$ 0,00</strong></div><div class="summary-row"><span>Total investido</span><strong id="investmentTotal">R$ 0,00</strong></div><div class="summary-row total"><span>Sobra projetada</span><strong id="projectedTotal">R$ 0,00</strong></div>
       </section>
     </main>
-
     <footer>FinanX • clareza para decidir melhor</footer>
   </div>
 
-  <dialog id="debtModal">
-    <form id="debtForm" method="dialog">
-      <div class="modal-head"><h3>Nova dívida</h3><button type="button" data-close>✕</button></div>
-      <label>Nome da pessoa/empresa<input name="name" required placeholder="Ex.: João, Banco, Loja" /></label>
-      <label>Valor total<input name="amount" type="number" min="0" step="0.01" required placeholder="0,00" /></label>
-      <label>Data de vencimento<input name="dueDate" type="date" required /></label>
-      <div class="form-grid"><label>Parcelado?<select name="installment"><option value="no">Não</option><option value="yes">Sim</option></select></label><label>Nº de parcelas<input name="installments" type="number" min="1" value="1" /></label></div>
-      <label>Observação<input name="note" placeholder="Opcional" /></label>
-      <button class="primary" type="submit">Salvar dívida</button>
-    </form>
-  </dialog>
-
-  <dialog id="expenseModal">
-    <form id="expenseForm" method="dialog">
-      <div class="modal-head"><h3>Novo gasto mensal</h3><button type="button" data-close>✕</button></div>
-      <label>Descrição<input name="name" required placeholder="Ex.: Aluguel" /></label>
-      <label>Valor<input name="amount" type="number" min="0" step="0.01" required /></label>
-      <label>Categoria<select name="category"><option>Moradia</option><option>Alimentação</option><option>Transporte</option><option>Saúde</option><option>Lazer</option><option>Educação</option><option>Assinaturas</option><option>Outros</option></select></label>
-      <button class="primary" type="submit">Salvar gasto</button>
-    </form>
-  </dialog>
-
-  <dialog id="incomeModal">
-    <form id="incomeForm" method="dialog">
-      <div class="modal-head"><h3>Nova receita</h3><button type="button" data-close>✕</button></div>
-      <label>Descrição<input name="name" required placeholder="Ex.: Salário, comissão" /></label>
-      <label>Valor<input name="amount" type="number" min="0" step="0.01" required /></label>
-      <button class="primary" type="submit">Salvar receita</button>
-    </form>
-  </dialog>
-
-  <dialog id="investmentModal">
-    <form id="investmentForm" method="dialog">
-      <div class="modal-head"><h3>Novo investimento</h3><button type="button" data-close>✕</button></div>
-      <label>Investimento<input name="name" required placeholder="Ex.: CDB, Tesouro, Bitcoin" /></label>
-      <label>Valor atual<input name="amount" type="number" min="0" step="0.01" required /></label>
-      <label>Tipo<select name="type"><option>Renda fixa</option><option>Fundos</option><option>Ações</option><option>Cripto</option><option>Reserva</option><option>Outro</option></select></label>
-      <button class="primary" type="submit">Salvar investimento</button>
-    </form>
-  </dialog>
+  <dialog id="debtModal"><form id="debtForm" method="dialog"><div class="modal-head"><h3>Nova dívida</h3><button type="button" data-close>✕</button></div><label>Nome da pessoa/empresa<input name="name" required placeholder="Ex.: João, Banco, Loja" /></label><label>Valor total<input name="amount" type="number" min="0" step="0.01" required /></label><label>Data de vencimento<input name="dueDate" type="date" required /></label><div class="form-grid"><label>Parcelado?<select name="installment"><option value="no">Não</option><option value="yes">Sim</option></select></label><label>Nº de parcelas<input name="installments" type="number" min="1" value="1" /></label></div><label>Observação<input name="note" placeholder="Opcional" /></label><button class="primary" type="submit">Salvar dívida</button></form></dialog>
+  <dialog id="expenseModal"><form id="expenseForm" method="dialog"><div class="modal-head"><h3>Novo gasto mensal</h3><button type="button" data-close>✕</button></div><label>Descrição<input name="name" required /></label><label>Valor<input name="amount" type="number" min="0" step="0.01" required /></label><label>Categoria<select name="category"><option>Moradia</option><option>Alimentação</option><option>Transporte</option><option>Saúde</option><option>Lazer</option><option>Educação</option><option>Assinaturas</option><option>Outros</option></select></label><button class="primary" type="submit">Salvar gasto</button></form></dialog>
+  <dialog id="incomeModal"><form id="incomeForm" method="dialog"><div class="modal-head"><h3>Nova receita</h3><button type="button" data-close>✕</button></div><label>Descrição<input name="name" required /></label><label>Valor<input name="amount" type="number" min="0" step="0.01" required /></label><button class="primary" type="submit">Salvar receita</button></form></dialog>
+  <dialog id="investmentModal"><form id="investmentForm" method="dialog"><div class="modal-head"><h3>Novo investimento</h3><button type="button" data-close>✕</button></div><label>Investimento<input name="name" required /></label><label>Valor atual<input name="amount" type="number" min="0" step="0.01" required /></label><label>Tipo<select name="type"><option>Renda fixa</option><option>Fundos</option><option>Ações</option><option>Cripto</option><option>Reserva</option><option>Outro</option></select></label><button class="primary" type="submit">Salvar investimento</button></form></dialog>
+  <dialog id="assetModal"><form id="assetForm" method="dialog"><div class="modal-head"><h3>Novo patrimônio</h3><button type="button" data-close>✕</button></div><label>Bem ou reserva<input name="name" required placeholder="Ex.: Carro, imóvel, dinheiro em conta" /></label><label>Valor estimado<input name="amount" type="number" min="0" step="0.01" required /></label><label>Tipo<select name="type"><option>Dinheiro</option><option>Veículo</option><option>Imóvel</option><option>Empresa</option><option>Outro</option></select></label><button class="primary" type="submit">Salvar patrimônio</button></form></dialog>
+  <dialog id="goalModal"><form id="goalForm" method="dialog"><div class="modal-head"><h3>Nova meta</h3><button type="button" data-close>✕</button></div><label>Objetivo<input name="name" required placeholder="Ex.: Reserva de emergência" /></label><label>Valor alvo<input name="target" type="number" min="0" step="0.01" required /></label><label>Quanto já tenho<input name="current" type="number" min="0" step="0.01" value="0" /></label><label>Prazo<input name="dueDate" type="date" /></label><button class="primary" type="submit">Salvar meta</button></form></dialog>
 
   <script src="app.js"></script>
 </body>
