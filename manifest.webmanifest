@@ -1,12 +1,26 @@
 {
+  "id":"./",
   "name":"FinanX — Controle Financeiro",
   "short_name":"FinanX",
-  "start_url":"./",
+  "description":"Central financeira pessoal para controlar dívidas, gastos, receitas, patrimônio, metas e investimentos.",
+  "lang":"pt-BR",
+  "dir":"ltr",
+  "start_url":"./?source=pwa",
+  "scope":"./",
   "display":"standalone",
+  "display_override":["window-controls-overlay","standalone","minimal-ui"],
+  "orientation":"portrait-primary",
   "background_color":"#07111f",
   "theme_color":"#07111f",
-  "description":"Controle de dívidas, gastos, receitas e investimentos.",
+  "categories":["finance","productivity","utilities"],
+  "prefer_related_applications":false,
   "icons":[
-    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"},
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"maskable"}
+  ],
+  "shortcuts":[
+    {"name":"Nova dívida","short_name":"Dívida","description":"Cadastrar uma nova dívida","url":"./?action=debt","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Novo gasto","short_name":"Gasto","description":"Cadastrar um novo gasto","url":"./?action=expense","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Nova receita","short_name":"Receita","description":"Cadastrar uma nova receita","url":"./?action=income","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml"}]}
   ]
 }
