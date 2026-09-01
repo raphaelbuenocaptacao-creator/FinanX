@@ -1,4 +1,5 @@
-const CACHE='finanx-v4-safe-shell';
+const CACHE='finanx-v5-safe-shell';
+const CACHE_PREFIX='finanx-';
 const CORE=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./icon-192.svg','./icon-512.svg','./icon-maskable.svg'];
 const SENSITIVE_KEYS=['token','access_token','refresh_token','id_token','password','passwd','session','session_id','code','credential','credentials','apikey','api_key','secret'];
 const PRIVATE_PATHS=['/api/','/auth/','/login','/logout','/session','/account','/profile','/admin'];
@@ -29,7 +30,13 @@ self.addEventListener('install',event=>{
   })());
 });
 self.addEventListener('activate',event=>{
-  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
+  event.waitUntil((async()=>{
+    const keys=await caches.keys();
+    await Promise.all(keys
+      .filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE)
+      .map(key=>caches.delete(key)));
+    await self.clients.claim();
+  })());
 });
 self.addEventListener('fetch',event=>{
   const req=event.request;
@@ -45,17 +52,15 @@ self.addEventListener('fetch',event=>{
   const coreMatch=CORE.some(asset=>new URL(asset,self.registration.scope).pathname===coreUrl.pathname);
   if(!coreMatch) return;
   event.respondWith((async()=>{
-    const cached=await caches.match(req,{ignoreSearch:true});
+    const cache=await caches.open(CACHE);
+    const cached=await cache.match(req,{ignoreSearch:true});
     try{
-      const response=await fetch(req,{credentials:'omit'});
-      if(cacheableResponse(response)){
-        const cache=await caches.open(CACHE);
-        await cache.put(req,response.clone());
-      }
+      const response=await fetch(req,{credentials:'omit',cache:'no-store'});
+      if(cacheableResponse(response)) await cache.put(req,response.clone());
       return response;
-    }catch(_){
+    }catch(error){
       if(cached) return cached;
-      throw _;
+      throw error;
     }
   })());
 });
