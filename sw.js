@@ -1,4 +1,4 @@
-const CACHE='finanx-v5-safe-shell';
+const CACHE='finanx-v6-safe-shell';
 const CACHE_PREFIX='finanx-';
 const CORE=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./icon-192.svg','./icon-512.svg','./icon-maskable.svg'];
 const SENSITIVE_KEYS=['token','access_token','refresh_token','id_token','password','passwd','session','session_id','code','credential','credentials','apikey','api_key','secret'];
@@ -11,10 +11,10 @@ function isSensitiveRequest(req,url){
   return false;
 }
 function cacheableResponse(res){
-  if(!res||!res.ok||res.type==='opaque') return false;
+  if(!res||!res.ok||res.type==='opaque'||res.status===206) return false;
   const cc=(res.headers.get('cache-control')||'').toLowerCase();
   if(cc.includes('private')||cc.includes('no-store')) return false;
-  if(res.headers.has('set-cookie')) return false;
+  if(res.headers.has('set-cookie')||res.headers.has('content-range')) return false;
   return true;
 }
 self.addEventListener('install',event=>{
@@ -40,7 +40,7 @@ self.addEventListener('activate',event=>{
 });
 self.addEventListener('fetch',event=>{
   const req=event.request;
-  if(req.method!=='GET') return;
+  if(req.method!=='GET'||req.headers.has('range')) return;
   const url=new URL(req.url);
   if(url.origin!==self.location.origin) return;
   if(isSensitiveRequest(req,url)) return;
