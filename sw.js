@@ -1,6 +1,6 @@
-const CACHE='finanx-v7-safe-shell';
+const CACHE='finanx-v8-raster-safe-shell';
 const CACHE_PREFIX='finanx-';
-const CORE=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./icon-192.svg','./icon-512.svg','./icon-maskable.svg'];
+const CORE=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable.png'];
 const SENSITIVE_KEYS=['token','access_token','refresh_token','id_token','password','passwd','session','session_id','code','credential','credentials','apikey','api_key','secret'];
 const PRIVATE_PATHS=['/api/','/auth/','/login','/logout','/session','/account','/profile','/admin'];
 function isSensitiveRequest(req,url){
@@ -14,7 +14,9 @@ function isSensitiveRequest(req,url){
 function cacheableResponse(res){
   if(!res||!res.ok||res.type==='opaque'||res.status===206||res.redirected) return false;
   const cc=(res.headers.get('cache-control')||'').toLowerCase();
+  const vary=(res.headers.get('vary')||'').toLowerCase();
   if(cc.includes('private')||cc.includes('no-store')) return false;
+  if(vary.includes('cookie')||vary.includes('authorization')) return false;
   if(res.headers.has('set-cookie')||res.headers.has('content-range')) return false;
   return true;
 }
@@ -33,9 +35,7 @@ self.addEventListener('install',event=>{
 self.addEventListener('activate',event=>{
   event.waitUntil((async()=>{
     const keys=await caches.keys();
-    await Promise.all(keys
-      .filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE)
-      .map(key=>caches.delete(key)));
+    await Promise.all(keys.filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE).map(key=>caches.delete(key)));
     await self.clients.claim();
   })());
 });
@@ -43,14 +43,12 @@ self.addEventListener('fetch',event=>{
   const req=event.request;
   if(req.method!=='GET'||req.headers.has('range')||req.headers.has('if-range')) return;
   const url=new URL(req.url);
-  if(url.origin!==self.location.origin) return;
-  if(isSensitiveRequest(req,url)) return;
+  if(url.origin!==self.location.origin||isSensitiveRequest(req,url)) return;
   if(req.mode==='navigate'){
     event.respondWith(fetch(req,{cache:'no-store',redirect:'error'}).catch(()=>caches.match('./index.html')));
     return;
   }
-  const coreUrl=new URL(req.url);
-  const coreMatch=CORE.some(asset=>new URL(asset,self.registration.scope).pathname===coreUrl.pathname);
+  const coreMatch=CORE.some(asset=>new URL(asset,self.registration.scope).pathname===url.pathname);
   if(!coreMatch) return;
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE);
