@@ -1,4 +1,4 @@
-const CACHE='finanx-v8-raster-safe-shell';
+const CACHE='finanx-v9-private-vary-star-safe-shell';
 const CACHE_PREFIX='finanx-';
 const CORE=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable.png'];
 const SENSITIVE_KEYS=['token','access_token','refresh_token','id_token','password','passwd','session','session_id','code','credential','credentials','apikey','api_key','secret'];
@@ -16,7 +16,7 @@ function cacheableResponse(res){
   const cc=(res.headers.get('cache-control')||'').toLowerCase();
   const vary=(res.headers.get('vary')||'').toLowerCase();
   if(cc.includes('private')||cc.includes('no-store')) return false;
-  if(vary.includes('cookie')||vary.includes('authorization')) return false;
+  if(vary==='*'||vary.includes('cookie')||vary.includes('authorization')) return false;
   if(res.headers.has('set-cookie')||res.headers.has('content-range')) return false;
   return true;
 }
