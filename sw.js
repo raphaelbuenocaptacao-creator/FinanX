@@ -1,4 +1,4 @@
-const CACHE='finanx-v10-query-safe-private-shell';
+const CACHE='finanx-v11-vary-range-safe-private-shell';
 const CACHE_PREFIX='finanx-';
 const CORE=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable.png'];
 const CORE_URLS=new Set(CORE.map(asset=>new URL(asset,self.location.href).href));
@@ -14,7 +14,7 @@ function isSensitiveRequest(req,url){
 }
 function hasSensitiveVary(res){
   const vary=(res.headers.get('vary')||'').toLowerCase();
-  return vary.split(',').some(value=>{const key=value.trim();return key==='*'||key==='cookie'||key==='authorization';});
+  return vary.split(',').some(value=>{const key=value.trim();return key==='*'||key==='cookie'||key==='authorization'||key==='range'||key==='if-range';});
 }
 function cacheableResponse(res){
   if(!res||!res.ok||res.type!=='basic'||res.status===206||res.redirected) return false;
