@@ -1,0 +1,58 @@
+name: FinanX PWA Audit
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pwa-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate PWA contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, re, struct
+          from pathlib import Path
+          root = Path('.')
+          required = ['index.html','app.js','sw.js','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable.png']
+          missing = [p for p in required if not (root/p).is_file()]
+          assert not missing, f'Missing PWA files: {missing}'
+          manifest = json.loads((root/'manifest.webmanifest').read_text())
+          for key in ('name','short_name','start_url','display','theme_color','background_color','icons'):
+              assert manifest.get(key), f'Manifest missing {key}'
+          assert manifest['display'] in ('standalone','fullscreen','minimal-ui')
+          icons = manifest['icons']
+          assert any(i.get('sizes') == '192x192' for i in icons), 'Missing 192x192 icon'
+          assert any(i.get('sizes') == '512x512' for i in icons), 'Missing 512x512 icon'
+          assert any('maskable' in i.get('purpose','') for i in icons), 'Missing maskable icon'
+          def png_size(path):
+              data = Path(path).read_bytes()
+              assert data[:8] == b'\x89PNG\r\n\x1a\n', f'{path} is not PNG'
+              return struct.unpack('>II', data[16:24])
+          assert png_size('icon-192.png') == (192,192)
+          assert png_size('icon-512.png') == (512,512)
+          assert png_size('icon-maskable.png') == (512,512)
+          html = (root/'index.html').read_text()
+          assert 'manifest.webmanifest' in html, 'Manifest not linked'
+          assert 'theme-color' in html, 'Missing theme-color meta'
+          assert 'viewport' in html, 'Missing viewport meta'
+          sw = (root/'sw.js').read_text()
+          app = (root/'app.js').read_text()
+          m = re.search(r"const CACHE=['\"]([^'\"]+)", sw)
+          assert m, 'CACHE version not found in sw.js'
+          version = m.group(1)
+          assert f"./sw.js?v={version}" in app, f'SW registration is not version-aligned: expected ./sw.js?v={version}'
+          assert 'updateViaCache' in app and 'none' in app, 'updateViaCache none missing'
+          for needle in ('authorization','cookie','range','if-range','no-store','private','set-cookie','content-range'):
+              assert needle in sw.lower(), f'SW cache safety missing {needle}'
+          assert 'CACHE_PREFIX' in sw and 'caches.delete' in sw, 'Versioned cache cleanup missing'
+          assert 'beforeinstallprompt' in app, 'Install prompt support missing'
+          print('FinanX PWA audit OK:', version)
+          PY
