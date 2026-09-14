@@ -54,5 +54,9 @@ jobs:
               assert needle in sw.lower(), f'SW cache safety missing {needle}'
           assert 'CACHE_PREFIX' in sw and 'caches.delete' in sw, 'Versioned cache cleanup missing'
           assert 'beforeinstallprompt' in app, 'Install prompt support missing'
+          assert 'visibilitychange' in app, 'PWA must check for updates when returning to foreground'
+          assert 'registration.update()' in app, 'Foreground update check missing'
+          assert 'controllerchange' in app, 'Service worker handoff missing'
+          assert 'hadController' in app, 'First-install reload guard missing'
           print('FinanX PWA audit OK:', version)
           PY
